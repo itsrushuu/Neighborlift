@@ -18,6 +18,8 @@ export type BoardFilters = {
   category: "all" | DemoPost["category"];
   urgency: "all" | DemoPost["urgency"];
   kind: "all" | DemoPost["kind"];
+  tag?: string;
+  tagQuery?: string;
 };
 
 export const categoryMeta = {
@@ -162,8 +164,12 @@ export const safeParseSkills = (value: string | string[]) => {
   }
 };
 
-export const filterPosts = (posts: DemoPost[], filters: BoardFilters) => posts.filter(post =>
-  (filters.category === "all" || post.category === filters.category) &&
-  (filters.urgency === "all" || post.urgency === filters.urgency) &&
-  (filters.kind === "all" || post.kind === filters.kind)
-);
+export const filterPosts = (posts: DemoPost[], filters: BoardFilters) => posts.filter(post => {
+  const tag = filters.tag?.trim().toLowerCase();
+  const tagQuery = filters.tagQuery?.trim().toLowerCase();
+  const matchesTag = (!tag || post.skills.some(skill => skill.toLowerCase() === tag)) && (!tagQuery || post.skills.some(skill => skill.toLowerCase().includes(tagQuery)));
+  return (filters.category === "all" || post.category === filters.category) &&
+    (filters.urgency === "all" || post.urgency === filters.urgency) &&
+    (filters.kind === "all" || post.kind === filters.kind) &&
+    matchesTag;
+});

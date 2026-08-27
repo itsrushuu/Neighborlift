@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { demoPosts, filterPosts } from "../client/src/data/demo";
 import { approximateAreaPoint, isMapActivationKey, isUsableApproximateArea, mapMarkerAccessibility } from "../shared/map";
 
 describe("privacy-safe map coordinates", () => {
@@ -18,6 +19,14 @@ describe("privacy-safe map coordinates", () => {
     expect(mapMarkerAccessibility("request", "Grocery pickup")).toEqual({ ariaLabel: "Help request: Grocery pickup", tabIndex: "0", role: "button" });
     expect(["Enter", " ", "Spacebar"].every(isMapActivationKey)).toBe(true);
     expect(isMapActivationKey("Escape")).toBe(false);
+  });
+
+  it("filters posts by category and skill tag together", () => {
+    const filtered = filterPosts(demoPosts, { category: "groceries", urgency: "all", kind: "all", tag: "Spanish" });
+    expect(filtered.map(post => post.id)).toEqual(["demo-grocery-request", "demo-grocery-offer"]);
+    expect(filterPosts(demoPosts, { category: "all", urgency: "all", kind: "all", tag: "algebra" }).every(post => post.skills.includes("algebra"))).toBe(true);
+    expect(filterPosts(demoPosts, { category: "all", urgency: "today", kind: "all" }).map(post => post.id)).toEqual(["demo-grocery-request", "demo-grocery-offer"]);
+    expect(filterPosts(demoPosts, { category: "all", urgency: "all", kind: "all", tagQuery: "wheelchair" }).map(post => post.id)).toEqual(["demo-ride-request", "demo-ride-offer"]);
   });
 
   it("creates a bounded deterministic point for an unknown approximate area", () => {

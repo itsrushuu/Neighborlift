@@ -65,3 +65,11 @@
 
 - [x] Push and verify the latest interactive map changes on the connected GitHub main branch.
 - [x] Add targeted keyboard interaction coverage for filters, activity rows, and marker Enter/Space selection behavior.
+
+- [x] Add map filters for post type, category, urgency, and searchable skill/tag terms.
+- [x] Keep map pins, activity list, counts, selected post, empty states, and clear-all controls synchronized with filters.
+- [x] Add tests and responsive accessibility verification for the expanded map filtering experience.
+
+- [x] Add an urgency filter control to the live map and synchronize it with pins and results.
+- [x] Add searchable skill/tag text input alongside preset tag chips.
+- [x] Extend tests for urgency and searchable tags and verify filter controls are keyboard-accessible and responsive.
