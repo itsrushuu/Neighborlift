@@ -26,5 +26,11 @@
 - [x] Verify the authenticated `community.mine` path passes only the signed-in user ID and returns completed request/offer history.
 - [x] Finalize a complete Devpost project description covering inspiration, functionality, tech stack, challenges, accomplishments, learning, and next steps.
 - [x] Create and validate a reusable skill that captures the HackSocial project-development workflow used for NeighborLift.
-- [ ] Export the updated project to a GitHub repository and provide the repository URL for Devpost.
-- [ ] Re-verify the updated profile flow, tests, build, and submission materials before the final checkpoint.
+- [x] Export the updated project to a GitHub repository and provide the repository URL for Devpost.
+- [x] Assist with GitHub reauthorization through the browser if user consent is required, then publish the code to the supplied repository.
+- [x] Share the verified GitHub repository URL for use in the Devpost submission.
+- [x] Re-verify the updated profile flow, tests, build, and submission materials before the final checkpoint.
+- [x] Restart the development server after resolving the stale match-summary module state and verify the landing, profile, and match-detail routes load.
+- [x] Run a clean final type, test, and production-build pass after the development-server restart.
+- [x] Verify the authenticated profile’s first-time empty state in the browser and cover populated history data through the authenticated router test.
+- [x] Complete a final post-profile review of both Devpost submission documents.

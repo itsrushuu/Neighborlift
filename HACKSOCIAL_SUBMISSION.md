@@ -16,6 +16,8 @@ NeighborLift offers two primary journeys: **Browse Help** and **Offer Support**.
 
 Signed-in users can publish a request or offer with an approximate area rather than an exact address. NeighborLift evaluates compatible request-offer pairs using shared skills, timing overlap, approximate-area alignment, urgency, and relevant accessibility support. It returns a ranked list with concise, human-readable reasons. Users can then mark a proposed match as matched or completed, while the interface updates the coordination state clearly.
 
+The authenticated **My Activity** profile gives each person a private history of past requests, offers, and completed assistance. It includes summary counts, request/offer filters, and clear loading, empty, and error states so the app remains useful both for a first-time participant and an active community member.
+
 ### How we built it
 
 | Layer | Implementation |
@@ -24,7 +26,7 @@ Signed-in users can publish a request or offer with an approximate area rather t
 | Server and API | Express, tRPC, Zod validation, and Manus OAuth |
 | Data | MySQL/TiDB through Drizzle ORM with `helpPosts` and `helpMatches` tables |
 | AI assistance | A server-side, structured language-model explanation layered over transparent compatibility scoring |
-| Quality | Vitest coverage for input validation, match pairing, score logic, status mapping, empty filtering, and AI fallback behavior |
+| Quality | Vitest coverage for input validation, match pairing, score logic, status mapping, user-scoped history, empty filtering, and AI fallback behavior |
 
 The matching engine uses a deterministic compatibility baseline so rankings remain traceable. It rewards complementary request-offer categories, shared skills, approximate area alignment, time overlap, accessibility-relevant support, and alignment with time-sensitive requests. A server-side language model then translates the score into a short explanation; if that service is unavailable, NeighborLift returns a clear local explanation instead of blocking the match workflow.
 
@@ -34,7 +36,7 @@ The core challenge was balancing helpful recommendations with human agency. A pu
 
 ### Accomplishments that we are proud of
 
-NeighborLift brings together a polished, mobile-friendly interface and an end-to-end community coordination model. The app includes a public landing experience, a demo-ready help board, authenticated creation flows, persistent data structures, ranked matches, explainable AI assistance, match status transitions, and clear fallback or recovery states. Its visual style is intentionally warm and civic rather than transactional, helping the app feel more like a thoughtful neighborhood facilitator than a marketplace.
+NeighborLift brings together a polished, mobile-friendly interface and an end-to-end community coordination model. The app includes a public landing experience, a demo-ready help board, authenticated creation flows, a private personal activity profile, persistent data structures, ranked matches, explainable AI assistance, match status transitions, and clear fallback or recovery states. Its visual style is intentionally warm and civic rather than transactional, helping the app feel more like a thoughtful neighborhood facilitator than a marketplace.
 
 ### What we learned
 
@@ -55,7 +57,7 @@ This approximately 90-second walkthrough is designed for the live app or a scree
 | 0:30–0:45 | Open the grocery request. | “Each post exposes only the information needed to decide whether I can help: an approximate area, availability, useful skills, and any accessibility considerations.” |
 | 0:45–1:05 | Select **Explain this match**. | “NeighborLift ranks a complementary offer against the request using skills, timing, area, urgency, and access needs. It shows why the match may work, while leaving the decision with people.” |
 | 1:05–1:18 | Mark a match as matched, then completed. | “Once both people agree, the match advances from proposed to matched and then completed, so coordination remains clear.” |
-| 1:18–1:30 | Open **Offer Support**. | “Finally, a neighbor can publish a new offer or request with a privacy-conscious form. This is a small tool for making it easier to show up for one another.” |
+| 1:18–1:30 | Open **My Activity**, then **Offer Support**. | “A private profile keeps a person’s requests, offers, and completed support in one place. From there, a neighbor can publish a new privacy-conscious offer or request.” |
 
 ## Submission checklist
 
