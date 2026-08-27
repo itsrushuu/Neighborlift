@@ -6,6 +6,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { startLogin } from "@/const";
 import { categoryMeta, DemoPost } from "@/data/demo";
 import { trpc } from "@/lib/trpc";
+import { refreshAfterPostCreation } from "@/lib/liveData";
 
 type FormValues = { title: string; description: string; displayName: string; category: DemoPost["category"]; urgency: DemoPost["urgency"]; approximateArea: string; skills: string; availability: string; accessibilityNotes: string };
 const initialValues: FormValues = { title: "", description: "", displayName: "", category: "groceries", urgency: "this_week", approximateArea: "", skills: "", availability: "", accessibilityNotes: "" };
@@ -17,7 +18,8 @@ export default function NewPost() {
   const [formError, setFormError] = useState("");
   const [, setLocation] = useLocation();
   const { isAuthenticated, loading } = useAuth();
-  const createPost = trpc.community.create.useMutation({ onSuccess: created => setLocation(`/help/${created.id}`), onError: error => setFormError(error.message || "We could not save this post. Please try again.") });
+  const utils = trpc.useUtils();
+  const createPost = trpc.community.create.useMutation({ onSuccess: async created => { await refreshAfterPostCreation({ refreshBoard: () => utils.community.list.invalidate(), refreshProfile: () => utils.community.mine.invalidate(), refreshDetail: postId => utils.community.get.invalidate({ id: postId }), refreshCandidates: () => utils.matching.rankForPost.invalidate(), refreshMatches: () => utils.matching.forPost.invalidate() }, created.id); setLocation(`/help/${created.id}`); }, onError: error => setFormError(error.message || "We could not save this post. Please try again.") });
   const message = postKind === "offer" ? "Offer a little time, a useful skill, or a practical hand." : "Share only what a neighbor needs to know to offer a useful hand.";
 
   const update = <K extends keyof FormValues>(key: K, value: FormValues[K]) => setValues(current => ({ ...current, [key]: value }));

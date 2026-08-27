@@ -6,6 +6,8 @@ import { startLogin } from "@/const";
 import { SiteHeader } from "@/components/SiteHeader";
 import { categoryMeta, demoPosts, DemoPost, safeParseSkills, urgencyMeta } from "@/data/demo";
 import { trpc } from "@/lib/trpc";
+import { liveQueryOptions } from "@/lib/liveData";
+import { refreshAfterMatchStatusChange } from "@/lib/liveData";
 
 type MatchStatus = "proposed" | "matched" | "completed";
 type Candidate = DemoPost & { score?: number; reasons?: string[]; persistedMatchId?: number; status?: MatchStatus };
@@ -27,16 +29,14 @@ export default function HelpDetail() {
   const queryId = isLivePost ? numericId : 1;
   const { isAuthenticated } = useAuth();
   const utils = trpc.useUtils();
-  const { data: livePost, isLoading, error } = trpc.community.get.useQuery({ id: queryId }, { enabled: isLivePost });
-  const { data: persistedMatches } = trpc.matching.forPost.useQuery({ postId: queryId }, { enabled: isLivePost });
-  const { data: liveCandidates } = trpc.matching.rankForPost.useQuery({ postId: queryId }, { enabled: isLivePost });
+  const { data: livePost, isLoading, error } = trpc.community.get.useQuery({ id: queryId }, { enabled: isLivePost, ...liveQueryOptions });
+  const { data: persistedMatches } = trpc.matching.forPost.useQuery({ postId: queryId }, { enabled: isLivePost, ...liveQueryOptions });
+  const { data: liveCandidates } = trpc.matching.rankForPost.useQuery({ postId: queryId }, { enabled: isLivePost, ...liveQueryOptions });
   const [selectedId, setSelectedId] = useState<string>();
   const [demoStatus, setDemoStatus] = useState<MatchStatus>("proposed");
   const [coordinationReady, setCoordinationReady] = useState(false);
   const preview = trpc.matching.explainPreview.useMutation();
-  const refreshMatching = async () => {
-    await Promise.all([utils.matching.forPost.invalidate({ postId: queryId }), utils.matching.rankForPost.invalidate({ postId: queryId }), utils.community.get.invalidate({ id: queryId })]);
-  };
+  const refreshMatching = () => refreshAfterMatchStatusChange({ refreshMatches: postId => utils.matching.forPost.invalidate({ postId }), refreshCandidates: postId => utils.matching.rankForPost.invalidate({ postId }), refreshDetail: postId => utils.community.get.invalidate({ id: postId }) }, queryId);
   const setPersistedStatus = trpc.matching.setStatus.useMutation({ onSuccess: refreshMatching });
   const createPersistedMatch = trpc.matching.create.useMutation({ onSuccess: match => setPersistedStatus.mutate({ id: match!.id, status: "matched" }) });
 

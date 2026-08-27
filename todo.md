@@ -43,3 +43,9 @@
 - [x] Re-verify the refined project’s visual states, TypeScript checks, tests, and production build.
 - [x] Synchronize the refreshed NeighborLift code to the connected GitHub repository.
 - [x] Verify that the GitHub `main` revision matches the polished NeighborLift UI/UX checkpoint.
+- [x] Add resilient live refresh for the help board, match workspace, and My Activity profile using persisted server data.
+- [x] Provide visible live-refresh feedback and immediate cache updates after creating posts or changing match status.
+- [x] Verify that the live-data behavior works in local development and remains safe for deployed multi-user use.
+- [x] Add automated coverage for live-refresh configuration and mutation cache invalidation.
+- [x] Extract and test post-creation and match-status cache-refresh routines used by the live-data workflows.
+- [ ] Synchronize the real-data update to the connected GitHub repository.
