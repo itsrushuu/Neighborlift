@@ -1,7 +1,8 @@
-import { eq } from "drizzle-orm";
+import { desc, eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { helpMatches, helpPosts, InsertHelpPost, InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import { isValidMatchPair, MatchProfile, postStatusForMatch, scoreCompatibility } from "../shared/matching";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -89,4 +90,97 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function listHelpPosts() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(helpPosts).orderBy(desc(helpPosts.createdAt));
+}
+
+export async function getHelpPostById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(helpPosts).where(eq(helpPosts.id, id)).limit(1);
+  return result[0];
+}
+
+export async function createHelpPost(post: Omit<InsertHelpPost, "id" | "createdAt" | "updatedAt">) {
+  const db = await getDb();
+  if (!db) throw new Error("The community board is temporarily unavailable.");
+  const result = await db.insert(helpPosts).values(post);
+  return getHelpPostById(Number(result[0].insertId));
+}
+
+export async function getMatchesForPost(postId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(helpMatches).where(or(eq(helpMatches.requestId, postId), eq(helpMatches.offerId, postId)));
+}
+
+export async function getMatchSummariesForPost(postId: number) {
+  const matches = await getMatchesForPost(postId);
+  return Promise.all(matches.map(async match => {
+    const counterpartId = match.requestId === postId ? match.offerId : match.requestId;
+    return { ...match, counterpart: await getHelpPostById(counterpartId) };
+  }));
+}
+
+export async function getHelpMatchById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const rows = await db.select().from(helpMatches).where(eq(helpMatches.id, id)).limit(1);
+  return rows[0];
+}
+
+function toMatchProfile(post: Awaited<ReturnType<typeof getHelpPostById>>): MatchProfile {
+  if (!post) throw new Error("The selected community post no longer exists.");
+  let skills: string[] = [];
+  try {
+    const parsed = JSON.parse(post.skills);
+    skills = Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+  } catch {
+    skills = [];
+  }
+  return { category: post.category, skills, availability: post.availability, approximateArea: post.approximateArea, urgency: post.urgency, accessibilityNotes: post.accessibilityNotes };
+}
+
+export async function rankCandidatesForPost(postId: number) {
+  const current = await getHelpPostById(postId);
+  if (!current) throw new Error("The selected community post no longer exists.");
+  const candidates = await listHelpPosts();
+  return candidates
+    .filter(candidate => candidate.id !== current.id && candidate.status === "open" && isValidMatchPair(current.kind === "request" ? current.kind : candidate.kind, current.kind === "request" ? candidate.kind : current.kind))
+    .map(candidate => {
+      const request = current.kind === "request" ? current : candidate;
+      const offer = current.kind === "offer" ? current : candidate;
+      return { candidate, ...scoreCompatibility(toMatchProfile(request), toMatchProfile(offer)) };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+}
+
+export async function createHelpMatch(requestId: number, offerId: number, aiExplanation?: string | null) {
+  const db = await getDb();
+  if (!db) throw new Error("Matching is temporarily unavailable.");
+  const [request, offer] = await Promise.all([getHelpPostById(requestId), getHelpPostById(offerId)]);
+  if (!request || !offer) throw new Error("Both sides of a match must still be available.");
+  if (!isValidMatchPair(request.kind, offer.kind)) throw new Error("A match must pair one help request with one volunteer offer.");
+  const compatibility = scoreCompatibility(toMatchProfile(request), toMatchProfile(offer));
+  const result = await db.insert(helpMatches).values({ requestId, offerId, compatibilityScore: compatibility.score, reasons: JSON.stringify(compatibility.reasons), aiExplanation: aiExplanation || null, status: "proposed" });
+  const rows = await db.select().from(helpMatches).where(eq(helpMatches.id, Number(result[0].insertId))).limit(1);
+  return rows[0];
+}
+
+export async function updateHelpMatchStatus(id: number, status: "proposed" | "matched" | "completed" | "declined") {
+  const db = await getDb();
+  if (!db) throw new Error("Match updates are temporarily unavailable.");
+  const match = await getHelpMatchById(id);
+  if (!match) throw new Error("This match is no longer available.");
+  await db.transaction(async tx => {
+    await tx.update(helpMatches).set({ status }).where(eq(helpMatches.id, id));
+    const postStatus = postStatusForMatch(status);
+    if (postStatus) {
+      await tx.update(helpPosts).set({ status: postStatus }).where(or(eq(helpPosts.id, match.requestId), eq(helpPosts.id, match.offerId)));
+    }
+  });
+  return getHelpMatchById(id);
+}

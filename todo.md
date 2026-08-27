@@ -1,0 +1,22 @@
+# Project TODO
+
+- [x] Define the NeighborLift request, offer, match, and match-status data model for community coordination.
+- [x] Add database schema and server procedures for help requests, volunteer offers, matching, and status transitions.
+- [x] Add server-side validation for match creation: verify both posts exist, enforce request↔offer pairing, and compute compatibility data on the server.
+- [x] Implement coordinated status-transition logic so marking a match as matched or completed updates related help-post statuses consistently.
+- [x] Add tests for invalid pairings and status-transition behavior across matching logic.
+- [x] Wire the detail workspace to fetch and display persisted matches for a live post.
+- [x] Add a server-side candidate-ranking procedure and a ranked candidate list for live posts.
+- [x] Connect live match status controls to saved status transitions and refresh the visible state.
+- [x] Build a public landing page that explains the NeighborLift mission and guides visitors to browse help or offer support.
+- [x] Build a filterable community help board with seeded demo requests for groceries, rides, tutoring, translation, and accessibility support.
+- [x] Add category and urgency filtering with clear empty, loading, and error states.
+- [x] Build an authenticated request or volunteer-offer form covering skills, availability, approximate area, urgency, and accessibility considerations.
+- [x] Build request-detail and offer-detail views with proposed matches and clear coordination status.
+- [x] Implement explainable AI-assisted compatibility ranking based on skills, availability, proximity, urgency, and accessibility needs.
+- [x] Let users mark assistance as matched or completed with visible status updates.
+- [x] Apply an elegant, accessible, responsive visual system that keeps Browse Help and Offer Support as the primary journeys.
+- [x] Write or update Vitest coverage for matching logic, validation, and status transitions.
+- [x] Verify desktop and mobile rendering, TypeScript checks, tests, and key error states.
+- [x] Exercise a missing-post recovery state and add reproducible tests for empty-filter and AI-fallback scenarios.
+- [x] Prepare the project description, setup notes, and judge-facing submission checklist.

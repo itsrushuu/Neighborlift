@@ -1,33 +1,27 @@
-import { useAuth } from "@/_core/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { ArrowRight, CheckCircle2, Compass, HeartHandshake, MapPinned, ShieldCheck, Sparkles, UsersRound } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { CommunityPostCard } from "@/components/CommunityPostCard";
+import { SiteHeader } from "@/components/SiteHeader";
+import { demoPosts } from "@/data/demo";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
-
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const [, setLocation] = useLocation();
+  const featured = demoPosts.filter(post => post.kind === "request").slice(0, 3);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen overflow-hidden bg-[#fbfaf6] text-stone-900">
+      <SiteHeader />
       <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+        <section className="hero-grid relative border-b border-stone-200/70">
+          <div className="container relative grid min-h-[34rem] items-center gap-12 px-5 py-14 sm:px-7 lg:grid-cols-[1.05fr_.95fr] lg:py-20">
+            <div className="relative z-10"><p className="section-kicker">Community help, with a human touch</p><h1 className="mt-5 max-w-3xl font-display text-[3.2rem] font-extrabold leading-[0.91] tracking-[-0.065em] text-stone-950 sm:text-6xl lg:text-7xl">The kind of help that makes a neighborhood feel like home.</h1><p className="mt-7 max-w-xl text-base leading-7 text-stone-600 sm:text-lg">NeighborLift makes it simple to ask for everyday support, offer what you can, and find a compatible connection without turning care into a transaction.</p><div className="mt-9 flex flex-col gap-3 sm:flex-row"><Link href="/board" className="inline-flex items-center justify-center gap-2 rounded-full bg-stone-900 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-stone-900/15 transition hover:-translate-y-0.5 hover:bg-[#536645]">Browse help <ArrowRight className="h-4 w-4" /></Link><button onClick={() => setLocation("/new/offer")} className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-6 py-3.5 text-sm font-bold text-stone-800 transition hover:-translate-y-0.5 hover:border-stone-900">Offer support <HeartHandshake className="h-4 w-4" /></button></div><div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm font-semibold text-stone-600"><span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-[#657957]" />Approximate areas first</span><span className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-[#657957]" />Human-reviewed matches</span></div></div>
+            <div className="relative mx-auto w-full max-w-lg lg:mx-0"><div className="absolute -right-12 top-2 h-48 w-48 rounded-full bg-[#e2c887]/45 blur-3xl" /><div className="absolute -left-10 bottom-2 h-48 w-48 rounded-full bg-[#cddbc0]/60 blur-3xl" /><div className="relative rounded-[2.2rem] border border-white/70 bg-white/85 p-5 shadow-[0_26px_70px_rgba(55,48,39,0.14)] backdrop-blur"><div className="flex items-center justify-between"><div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#536645] text-white"><HeartHandshake className="h-5 w-5" /></span><div><p className="text-sm font-bold text-stone-900">A helpful match is nearby</p><p className="text-xs text-stone-500">Matched on timing, skills & area</p></div></div><span className="rounded-full bg-[#e9eee2] px-3 py-1 text-xs font-bold text-[#536645]">92% fit</span></div><div className="mt-5 rounded-[1.35rem] bg-[#f5f2ea] p-5"><p className="text-xs font-bold uppercase tracking-[0.12em] text-stone-500">TODAY · EASTWOOD</p><p className="mt-3 font-display text-2xl font-bold leading-tight text-stone-950">“A grocery pickup would help me recover at home.”</p><div className="mt-5 flex items-center justify-between border-t border-stone-200 pt-4"><span className="text-sm font-semibold text-stone-600">Maya · demo request</span><span className="flex items-center gap-1 text-xs font-bold text-[#536645]"><Sparkles className="h-3.5 w-3.5" />3 matches</span></div></div><div className="mt-4 flex items-start gap-3 rounded-2xl border border-[#d8e2ce] bg-[#f1f4ed] p-4"><CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#536645]" /><p className="text-sm leading-5 text-[#4f5d44]"><strong>Ari’s grocery-run offer aligns.</strong> Shared skills, a similar area, and availability today.</p></div></div></div>
+          </div>
+        </section>
+        <section className="container px-5 py-16 sm:px-7 sm:py-24"><div className="grid gap-10 lg:grid-cols-[.9fr_1.1fr]"><div><p className="section-kicker">A more neighborly default</p><h2 className="mt-4 max-w-md font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.05em] text-stone-950">Real life gets lighter when people can find each other.</h2><p className="mt-5 max-w-md text-base leading-7 text-stone-600">Need a lift, a study partner, a translation assist, or an extra set of hands? NeighborLift turns small moments of care into clear, respectful ways to connect.</p><Link href="/board" className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#536645] underline decoration-2 underline-offset-4 hover:text-stone-900">Explore the community board <ArrowRight className="h-4 w-4" /></Link></div><div className="grid gap-4 sm:grid-cols-3"><div className="rounded-[1.5rem] bg-[#e9eee2] p-6"><Compass className="h-6 w-6 text-[#536645]" /><h3 className="mt-8 font-display text-xl font-bold text-stone-950">Discover</h3><p className="mt-2 text-sm leading-6 text-[#58664d]">Browse clear requests and offers by category and timing.</p></div><div className="rounded-[1.5rem] bg-[#f5eee1] p-6"><UsersRound className="h-6 w-6 text-[#9a6f30]" /><h3 className="mt-8 font-display text-xl font-bold text-stone-950">Connect</h3><p className="mt-2 text-sm leading-6 text-[#775d38]">Review compatible matches before anyone commits.</p></div><div className="rounded-[1.5rem] bg-[#ece9f3] p-6"><MapPinned className="h-6 w-6 text-[#685989]" /><h3 className="mt-8 font-display text-xl font-bold text-stone-950">Coordinate</h3><p className="mt-2 text-sm leading-6 text-[#5f5578]">Share precise details only when a connection feels right.</p></div></div></div></section>
+        <section className="border-y border-stone-200 bg-[#f3f0e9] py-16 sm:py-20"><div className="container px-5 sm:px-7"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="section-kicker">On the board now</p><h2 className="mt-3 font-display text-4xl font-extrabold tracking-[-0.05em] text-stone-950">Ways neighbors can show up.</h2></div><Link href="/board" className="text-sm font-bold text-[#536645] underline decoration-2 underline-offset-4 hover:text-stone-900">See all requests and offers</Link></div><div className="mt-8 grid gap-5 lg:grid-cols-3">{featured.map(post => <CommunityPostCard post={post} key={post.id} />)}</div></div></section>
+        <section id="how-it-works" className="container px-5 py-16 sm:px-7 sm:py-24"><div className="rounded-[2rem] bg-stone-900 px-6 py-12 text-white sm:px-10 lg:px-14"><div className="grid gap-10 lg:grid-cols-[.9fr_1.1fr]"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#d4e0c9]">How it works</p><h2 className="mt-4 max-w-md font-display text-4xl font-extrabold leading-[1.02] tracking-[-0.05em]">Ask, offer, and decide together.</h2><p className="mt-5 max-w-md text-sm leading-6 text-stone-300">NeighborLift recommends a useful starting point, but people remain in charge at every step.</p></div><ol className="grid gap-3"><li className="flex gap-4 rounded-2xl bg-white/10 p-5"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#dbe7cd] text-xs font-extrabold text-[#34412c]">1</span><div><p className="font-bold">Share a practical need or offer</p><p className="mt-1 text-sm text-stone-300">Skills, timing, approximate area, and access considerations are enough to begin.</p></div></li><li className="flex gap-4 rounded-2xl bg-white/10 p-5"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#dbe7cd] text-xs font-extrabold text-[#34412c]">2</span><div><p className="font-bold">Review an explained match</p><p className="mt-1 text-sm text-stone-300">See why the connection may work before choosing whether to coordinate.</p></div></li><li className="flex gap-4 rounded-2xl bg-white/10 p-5"><span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#dbe7cd] text-xs font-extrabold text-[#34412c]">3</span><div><p className="font-bold">Mark progress, celebrate care</p><p className="mt-1 text-sm text-stone-300">Keep the support clear: proposed, matched, then completed when it’s done.</p></div></li></ol></div></div></section>
+      </main><footer className="border-t border-stone-200 bg-white"><div className="container flex flex-col gap-3 px-5 py-7 text-sm text-stone-500 sm:flex-row sm:items-center sm:justify-between sm:px-7"><p className="font-display text-lg font-bold text-stone-800">NeighborLift</p><p>Designed as a social-good prototype for HackSocial.</p></div></footer>
     </div>
   );
 }
