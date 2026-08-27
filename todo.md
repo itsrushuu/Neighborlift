@@ -20,3 +20,11 @@
 - [x] Verify desktop and mobile rendering, TypeScript checks, tests, and key error states.
 - [x] Exercise a missing-post recovery state and add reproducible tests for empty-filter and AI-fallback scenarios.
 - [x] Prepare the project description, setup notes, and judge-facing submission checklist.
+- [x] Build an authenticated profile page showing a user’s request, offer, and completed-assistance history.
+- [x] Add a profile navigation entry and clear empty, loading, and error states for personal activity.
+- [x] Add test coverage for user-specific community-post history.
+- [x] Verify the authenticated `community.mine` path passes only the signed-in user ID and returns completed request/offer history.
+- [x] Finalize a complete Devpost project description covering inspiration, functionality, tech stack, challenges, accomplishments, learning, and next steps.
+- [x] Create and validate a reusable skill that captures the HackSocial project-development workflow used for NeighborLift.
+- [ ] Export the updated project to a GitHub repository and provide the repository URL for Devpost.
+- [ ] Re-verify the updated profile flow, tests, build, and submission materials before the final checkpoint.

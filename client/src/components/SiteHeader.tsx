@@ -21,13 +21,14 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
           <Link href="/board" className="text-sm font-semibold text-stone-700 transition hover:text-[#536645]">Browse help</Link>
           <a href="/#how-it-works" className="text-sm font-semibold text-stone-700 transition hover:text-[#536645]">How it works</a>
+          <Link href="/profile" className="text-sm font-semibold text-stone-700 transition hover:text-[#536645]">My activity</Link>
           <Button onClick={() => navigate("/new/offer")} className="rounded-full bg-stone-900 px-5 font-bold text-white hover:bg-[#536645]">Offer support</Button>
         </nav>
         <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-lg text-stone-800 hover:bg-stone-100 md:hidden" aria-expanded={open} aria-label="Toggle navigation">
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </div>
-      {open && <div className="border-t border-stone-200 bg-[#fbfaf6] px-4 py-4 md:hidden"><div className="flex flex-col gap-2"><button onClick={() => navigate("/board")} className="rounded-lg px-3 py-3 text-left text-sm font-bold text-stone-800 hover:bg-stone-100">Browse help</button><button onClick={() => navigate("/new/offer")} className="rounded-lg bg-stone-900 px-3 py-3 text-left text-sm font-bold text-white">Offer support</button></div></div>}
+      {open && <div className="border-t border-stone-200 bg-[#fbfaf6] px-4 py-4 md:hidden"><div className="flex flex-col gap-2"><button onClick={() => navigate("/board")} className="rounded-lg px-3 py-3 text-left text-sm font-bold text-stone-800 hover:bg-stone-100">Browse help</button><button onClick={() => navigate("/profile")} className="rounded-lg px-3 py-3 text-left text-sm font-bold text-stone-800 hover:bg-stone-100">My activity</button><button onClick={() => navigate("/new/offer")} className="rounded-lg bg-stone-900 px-3 py-3 text-left text-sm font-bold text-white">Offer support</button></div></div>}
     </header>
   );
 }

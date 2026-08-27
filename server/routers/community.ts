@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createHelpPost, getHelpPostById, listHelpPosts } from "../db";
+import { createHelpPost, getHelpPostById, listHelpPosts, listHelpPostsForUser } from "../db";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 
 export const postInput = z.object({
@@ -18,6 +18,7 @@ export const postInput = z.object({
 export const communityRouter = router({
   list: publicProcedure.query(() => listHelpPosts()),
   get: publicProcedure.input(z.object({ id: z.number().int().positive() })).query(({ input }) => getHelpPostById(input.id)),
+  mine: protectedProcedure.query(({ ctx }) => listHelpPostsForUser(ctx.user.id)),
   create: protectedProcedure.input(postInput).mutation(async ({ ctx, input }) => {
     const created = await createHelpPost({
       ...input,

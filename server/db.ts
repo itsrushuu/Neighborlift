@@ -96,6 +96,12 @@ export async function listHelpPosts() {
   return db.select().from(helpPosts).orderBy(desc(helpPosts.createdAt));
 }
 
+export async function listHelpPostsForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(helpPosts).where(eq(helpPosts.userId, userId)).orderBy(desc(helpPosts.createdAt));
+}
+
 export async function getHelpPostById(id: number) {
   const db = await getDb();
   if (!db) return undefined;
