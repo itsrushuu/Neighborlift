@@ -6,6 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import CommunityBoard from "./pages/CommunityBoard";
+import CommunityMap from "./pages/CommunityMap";
 import HelpDetail from "./pages/HelpDetail";
 import NewPost from "./pages/NewPost";
 import Profile from "./pages/Profile";
@@ -16,6 +17,7 @@ function Router() {
     <Switch>
       <Route path={"/"} component={Home} />
       <Route path={"/board"} component={CommunityBoard} />
+      <Route path={"/map"} component={CommunityMap} />
       <Route path={"/new/:kind"} component={NewPost} />
       <Route path={"/help/:id"} component={HelpDetail} />
       <Route path={"/profile"} component={Profile} />

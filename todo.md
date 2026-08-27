@@ -49,3 +49,19 @@
 - [x] Add automated coverage for live-refresh configuration and mutation cache invalidation.
 - [x] Extract and test post-creation and match-status cache-refresh routines used by the live-data workflows.
 - [x] Synchronize the real-data update to the connected GitHub repository.
+
+- [x] Add an interactive real-time map route powered by persisted community posts.
+- [x] Visualize neighborhood-safe locations with accessible category icons and request/offer distinction.
+- [x] Add map filters, selected-post detail panel, legend, and live refresh feedback.
+- [x] Add friendly activity insights for active requests, offers, urgent needs, and category mix.
+- [x] Add map loading, empty, error, unavailable, and no-location fallbacks.
+- [x] Verify map responsiveness, keyboard accessibility, local runtime, tests, and production build.
+- [x] Synchronize the interactive map update to GitHub.
+
+> Real demonstration-post creation remains deferred at the user’s request; map demo cards remain clearly labeled as demo content until authentic community posts exist.
+
+- [x] Add an explicit no-location map fallback that excludes posts without usable approximate areas from pin placement.
+- [x] Add targeted keyboard-accessibility coverage and verification for map filters, activity rows, and marker selection.
+
+- [x] Push and verify the latest interactive map changes on the connected GitHub main branch.
+- [x] Add targeted keyboard interaction coverage for filters, activity rows, and marker Enter/Space selection behavior.
