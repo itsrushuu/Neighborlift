@@ -29,9 +29,34 @@
   .form-field input, .form-field textarea, .form-field select { @apply w-full rounded-xl border border-stone-300 bg-white px-3.5 py-3 text-sm font-medium text-stone-900 shadow-sm outline-none transition placeholder:text-stone-400 focus:border-[#70855e] focus:ring-4 focus:ring-[#dce6d1]; }
   .form-field textarea { @apply resize-y; }
   .form-field small { @apply -mt-1 text-xs font-medium leading-5 text-stone-500; }
+  .profile-summary-card { @apply rounded-[1.5rem] p-6 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_28px_rgba(51,43,34,0.09)]; }
+  .activity-row { @apply flex flex-col gap-4 rounded-2xl px-3 py-4 transition duration-200 hover:-translate-y-0.5 hover:bg-[#f6f7f2] hover:shadow-[0_10px_22px_rgba(51,43,34,0.06)] focus-visible:bg-[#f6f7f2] sm:flex-row sm:items-center sm:justify-between; }
+  .profile-skeleton-grid { @apply space-y-2; }
+  .profile-skeleton-row { @apply flex items-center gap-3 rounded-2xl border border-stone-100 p-4; }
+  .profile-skeleton-block { @apply bg-stone-200/80; }
+  .brand-seal { @apply relative grid place-items-center overflow-hidden rounded-xl bg-[#536645] text-white shadow-[0_6px_14px_rgba(83,102,69,.24)]; }
+  .brand-seal::after { content: ""; position: absolute; inset: 3px; border: 1px solid rgba(255,255,255,.3); border-radius: .55rem; }
+  .brand-seal svg { @apply relative z-10 h-[58%] w-[58%]; }
+  .mobile-nav-link { @apply rounded-xl px-3 py-3 text-left text-sm font-bold text-stone-800 transition hover:bg-[#edf1e8]; }
+  .mobile-nav-link-active { @apply bg-[#edf1e8] text-[#536645]; }
+  .notice-card { @apply relative overflow-hidden rounded-[1.55rem] border bg-white p-5 shadow-[0_10px_30px_rgba(51,43,34,0.05)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_20px_42px_rgba(51,43,34,0.12)]; }
+  .notice-card-request { @apply border-[#d9e2cf]; background: linear-gradient(150deg, #fff 0%, #fff 84%, #f0f4eb 100%); }
+  .notice-card-offer { @apply border-[#eadcc3]; background: linear-gradient(150deg, #fff 0%, #fff 84%, #faf2e4 100%); }
+  .notice-pin { @apply absolute right-6 top-0 h-2.5 w-12 rounded-b-full; background: rgba(83,102,69,.33); }
+  .notice-card-offer .notice-pin { background: rgba(167,123,57,.32); }
+  .notice-label { @apply text-[0.64rem] font-extrabold uppercase tracking-[0.13em]; }
+  .noticeboard-surface { background-image: linear-gradient(rgba(255,255,255,.72), rgba(255,255,255,.72)), radial-gradient(circle at 12% 12%, rgba(219,231,205,.5) 0 1px, transparent 1.5px), radial-gradient(circle at 88% 86%, rgba(226,200,135,.42) 0 1px, transparent 1.5px); background-size: auto, 18px 18px, 22px 22px; }
+  .board-tip { @apply relative overflow-hidden rounded-2xl border border-[#d5dfca] bg-[#edf2e8] p-5 shadow-sm; }
+  .board-tip::after { content: ""; position: absolute; height: 5rem; width: 5rem; right: -1.5rem; top: -1.5rem; border: 1px dashed rgba(83,102,69,.4); border-radius: 9999px; }
+  .form-progress-step { @apply flex min-w-0 items-center gap-2 rounded-xl border border-stone-200 bg-[#fbfaf6] px-3 py-2 text-xs font-semibold text-stone-600; }
+  .form-progress-step span { @apply grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#e9eee2] text-[0.65rem] font-extrabold text-[#536645]; }
+  .match-assist-panel { @apply relative overflow-hidden rounded-[1.6rem] bg-stone-900 p-6 text-white shadow-[0_18px_38px_rgba(30,26,22,.17)]; }
+  .match-assist-panel::before { content: ""; position: absolute; height: 12rem; width: 12rem; top: -8rem; right: -6rem; border: 1px solid rgba(219,231,205,.34); border-radius: 9999px; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .hero-grid > div { animation: rise-in 520ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+  .profile-skeleton-block { background: linear-gradient(110deg, rgba(231, 229, 225, .95) 8%, rgba(250, 250, 249, .92) 18%, rgba(231, 229, 225, .95) 33%); background-size: 220% 100%; animation: profile-shimmer 1.4s ease-in-out infinite; }
   @keyframes rise-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes profile-shimmer { to { background-position-x: -220%; } }
 }

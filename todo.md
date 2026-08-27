@@ -34,3 +34,11 @@
 - [x] Run a clean final type, test, and production-build pass after the development-server restart.
 - [x] Verify the authenticated profile’s first-time empty state in the browser and cover populated history data through the authenticated router test.
 - [x] Complete a final post-profile review of both Devpost submission documents.
+- [x] Add My Activity sorting for newest, oldest, status, requests, and offers.
+- [x] Enhance My Activity with smooth loading skeletons and accessible hover/focus feedback.
+- [x] Add tests for My Activity sorting and filtering behavior.
+- [ ] Deferred: create two authenticated community posts through the normal app flow when the user is ready to sign in.
+- [x] Complete a product-wide UI/UX refinement for the landing, discovery, creation, matching, and profile experiences.
+- [x] Improve responsive navigation, interaction feedback, and accessibility cues across key journeys.
+- [x] Re-verify the refined project’s visual states, TypeScript checks, tests, and production build.
+- [ ] Synchronize the refreshed NeighborLift code to the connected GitHub repository.
