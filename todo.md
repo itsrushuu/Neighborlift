@@ -89,3 +89,12 @@
 
 - [x] Restrict the celebration UI to successful offer posts and test that requests do not trigger it.
 - [x] Align celebration motion classes with actual CSS and document the non-blocking reduced-motion accessibility behavior.
+
+- [x] Rewrite README.md as a judge-ready project overview with demo flow, architecture, privacy, setup, testing, and learning sections.
+- [x] Add concise supporting docs for architecture, privacy decisions, and the demo walkthrough.
+- [x] Verify repository hygiene, documentation links, tests, TypeScript, and production build before GitHub synchronization.
+- [x] Synchronize the polished repository package to the connected GitHub main branch.
+
+- [x] Replace root-relative README app links with judge-friendly live prototype URLs or clearly labeled route text.
+- [x] Re-verify all README and supporting-document links plus repository hygiene, tests, TypeScript, and production build.
+- [x] Commit and push the README/docs package to GitHub main and verify the remote contains the new files.
