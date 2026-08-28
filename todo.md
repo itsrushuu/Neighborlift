@@ -73,3 +73,5 @@
 - [x] Add an urgency filter control to the live map and synchronize it with pins and results.
 - [x] Add searchable skill/tag text input alongside preset tag chips.
 - [x] Extend tests for urgency and searchable tags and verify filter controls are keyboard-accessible and responsive.
+
+- [x] Make the live map copy and interaction cues feel more human, warm, and neighbor-to-neighbor.
