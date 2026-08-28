@@ -75,3 +75,7 @@
 - [x] Extend tests for urgency and searchable tags and verify filter controls are keyboard-accessible and responsive.
 
 - [x] Make the live map copy and interaction cues feel more human, warm, and neighbor-to-neighbor.
+
+- [x] Add persisted user preferences for the display name and availability shown on new posts.
+- [x] Add a lightweight thank-you message or animation after a neighbor offers help on a post.
+- [x] Add rotating friendly encouragement prompts to the live map with reduced-motion-safe behavior.

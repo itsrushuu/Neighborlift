@@ -36,7 +36,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     };
     const updateSet: Record<string, unknown> = {};
 
-    const textFields = ["name", "email", "loginMethod"] as const;
+    const textFields = ["name", "email", "loginMethod", "displayNamePreference", "availabilityPreference"] as const;
     type TextField = (typeof textFields)[number];
 
     const assignNullable = (field: TextField) => {
@@ -88,6 +88,20 @@ export async function getUserByOpenId(openId: string) {
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
 
   return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserPreferences(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select({ displayNamePreference: users.displayNamePreference, availabilityPreference: users.availabilityPreference }).from(users).where(eq(users.id, userId)).limit(1);
+  return result[0];
+}
+
+export async function updateUserPreferences(userId: number, preferences: { displayNamePreference: string | null; availabilityPreference: string | null }) {
+  const db = await getDb();
+  if (!db) throw new Error("Your preferences are temporarily unavailable.");
+  await db.update(users).set(preferences).where(eq(users.id, userId));
+  return getUserPreferences(userId);
 }
 
 export async function listHelpPosts() {

@@ -1,6 +1,7 @@
 import { ArrowLeft, Check, CheckCircle2, Clock3, HeartHandshake, Lightbulb, Loader2, MapPin, MessageCircleMore, ShieldCheck, Sparkles, UsersRound } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocation, useParams } from "wouter";
+import { toast as sonnerToast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { startLogin } from "@/const";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -37,7 +38,7 @@ export default function HelpDetail() {
   const [coordinationReady, setCoordinationReady] = useState(false);
   const preview = trpc.matching.explainPreview.useMutation();
   const refreshMatching = () => refreshAfterMatchStatusChange({ refreshMatches: postId => utils.matching.forPost.invalidate({ postId }), refreshCandidates: postId => utils.matching.rankForPost.invalidate({ postId }), refreshDetail: postId => utils.community.get.invalidate({ id: postId }) }, queryId);
-  const setPersistedStatus = trpc.matching.setStatus.useMutation({ onSuccess: refreshMatching });
+  const setPersistedStatus = trpc.matching.setStatus.useMutation({ onSuccess: result => { if (result?.status === "matched") sonnerToast.success("Thanks for stepping in.", { description: "This neighbor connection is ready to coordinate." }); refreshMatching(); } });
   const createPersistedMatch = trpc.matching.create.useMutation({ onSuccess: match => setPersistedStatus.mutate({ id: match!.id, status: "matched" }) });
 
   const post = useMemo<DemoPost | undefined>(() => demoPost || (livePost ? asDemoPost(livePost) : undefined), [demoPost, livePost]);
@@ -65,6 +66,7 @@ export default function HelpDetail() {
   const updateStatus = (status: MatchStatus) => {
     if (!isLivePost) {
       setDemoStatus(status);
+      if (status === "matched") sonnerToast.success("Thanks for stepping in.", { description: "This neighbor connection is ready to coordinate." });
       return;
     }
     if (!isAuthenticated) {

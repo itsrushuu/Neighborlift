@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { postInput } from "./routers/community";
+import { postInput, preferencesInput } from "./routers/community";
 
 const validPost = {
   kind: "request" as const,
@@ -27,5 +27,10 @@ describe("community post validation", () => {
   it("requires at least one useful skill or need", () => {
     const result = postInput.safeParse({ ...validPost, skills: [] });
     expect(result.success).toBe(false);
+  });
+
+  it("accepts concise personal display preferences and rejects oversized values", () => {
+    expect(preferencesInput.safeParse({ displayNamePreference: "Rae", availabilityPreference: "Saturday mornings" }).success).toBe(true);
+    expect(preferencesInput.safeParse({ displayNamePreference: "x".repeat(81) }).success).toBe(false);
   });
 });
