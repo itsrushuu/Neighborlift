@@ -9,6 +9,7 @@ import { categoryMeta, demoPosts, DemoPost, safeParseSkills, urgencyMeta } from 
 import { trpc } from "@/lib/trpc";
 import { liveQueryOptions } from "@/lib/liveData";
 import { refreshAfterMatchStatusChange } from "@/lib/liveData";
+import { celebrationCopy, shouldCelebrate } from "@shared/celebration";
 
 type MatchStatus = "proposed" | "matched" | "completed";
 type Candidate = DemoPost & { score?: number; reasons?: string[]; persistedMatchId?: number; status?: MatchStatus };
@@ -38,7 +39,7 @@ export default function HelpDetail() {
   const [coordinationReady, setCoordinationReady] = useState(false);
   const preview = trpc.matching.explainPreview.useMutation();
   const refreshMatching = () => refreshAfterMatchStatusChange({ refreshMatches: postId => utils.matching.forPost.invalidate({ postId }), refreshCandidates: postId => utils.matching.rankForPost.invalidate({ postId }), refreshDetail: postId => utils.community.get.invalidate({ id: postId }) }, queryId);
-  const setPersistedStatus = trpc.matching.setStatus.useMutation({ onSuccess: result => { if (result?.status === "matched") sonnerToast.success("Thanks for stepping in.", { description: "This neighbor connection is ready to coordinate." }); refreshMatching(); } });
+  const setPersistedStatus = trpc.matching.setStatus.useMutation({ onSuccess: result => { if (result?.status === "matched" && shouldCelebrate("connection-matched")) sonnerToast.success(celebrationCopy.connectionMatched, { description: "This neighbor connection is ready to coordinate." }); refreshMatching(); } });
   const createPersistedMatch = trpc.matching.create.useMutation({ onSuccess: match => setPersistedStatus.mutate({ id: match!.id, status: "matched" }) });
 
   const post = useMemo<DemoPost | undefined>(() => demoPost || (livePost ? asDemoPost(livePost) : undefined), [demoPost, livePost]);
@@ -66,7 +67,7 @@ export default function HelpDetail() {
   const updateStatus = (status: MatchStatus) => {
     if (!isLivePost) {
       setDemoStatus(status);
-      if (status === "matched") sonnerToast.success("Thanks for stepping in.", { description: "This neighbor connection is ready to coordinate." });
+      if (status === "matched" && shouldCelebrate("connection-matched")) sonnerToast.success(celebrationCopy.connectionMatched, { description: "This neighbor connection is ready to coordinate." });
       return;
     }
     if (!isAuthenticated) {

@@ -27,6 +27,27 @@ export function isMapActivationKey(key: string) {
   return key === "Enter" || key === " " || key === "Spacebar";
 }
 
+/** Builds friendly, context-aware map prompts without exposing private post details. */
+export function getFriendlyMapPrompts(categories: string[], hour: number) {
+  const timePrompt = hour < 12
+    ? "Good morning—there may be a neighbor you can brighten up today."
+    : hour < 17
+      ? "Have a little time this afternoon? Someone nearby may need it."
+      : "A kind evening gesture can make tomorrow feel lighter.";
+  const categoryPrompt = categories.includes("groceries")
+    ? "Someone nearby could use a hand with everyday errands."
+    : categories.includes("rides")
+      ? "A ride can turn a tricky day into a manageable one."
+      : categories.includes("tutoring")
+        ? "A bit of knowledge shared can go a long way."
+        : categories.includes("translation")
+          ? "Language connects neighbors—your words might help someone feel understood."
+          : categories.includes("accessibility")
+            ? "Small accessibility-minded actions can open big doors."
+            : "Every neighbor has something useful to share.";
+  return [timePrompt, categoryPrompt, "A small offer can make someone’s whole day easier.", "You might be the neighbor someone has been hoping to find."];
+}
+
 /** Returns neighborhood-level coordinates; it never turns an exact address into a map pin. */
 export function approximateAreaPoint(approximateArea: string, index: number) {
   const normalizedArea = approximateArea.toLowerCase();

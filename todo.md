@@ -79,3 +79,13 @@
 - [x] Add persisted user preferences for the display name and availability shown on new posts.
 - [x] Add a lightweight thank-you message or animation after a neighbor offers help on a post.
 - [x] Add rotating friendly encouragement prompts to the live map with reduced-motion-safe behavior.
+
+- [x] Add a small heart/confetti celebration after a neighbor offers help, with reduced-motion support.
+- [x] Personalize rotating map prompts using local time of day and nearby post categories.
+- [x] Add tests and responsive accessibility verification for the celebration and contextual prompts.
+
+- [x] Add automated coverage for the offer celebration trigger conditions and reduced-motion-safe fallback.
+- [x] Verify and document celebration accessibility behavior: non-blocking status message, screen-reader announcement, and no motion under prefers-reduced-motion.
+
+- [x] Restrict the celebration UI to successful offer posts and test that requests do not trigger it.
+- [x] Align celebration motion classes with actual CSS and document the non-blocking reduced-motion accessibility behavior.

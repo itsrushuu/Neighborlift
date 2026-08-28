@@ -90,10 +90,29 @@
   .map-list-row strong { @apply block truncate text-sm font-bold text-stone-900; }
   .map-list-row small { @apply mt-1 block truncate text-xs font-medium text-stone-500; }
   .map-selected-card { @apply rounded-[1.7rem] border border-[#d6dfce] bg-[#f1f4ed] p-6 shadow-[0_12px_30px_rgba(51,43,34,0.05)]; }
+  .offer-celebration { @apply pointer-events-none fixed inset-x-0 top-24 z-50 mx-auto flex w-fit items-center gap-2 rounded-full border border-[#d5dfca] bg-white/95 px-5 py-3 text-sm font-bold text-[#536645] shadow-[0_12px_30px_rgba(51,43,34,0.16)] backdrop-blur; }
+  .offer-celebration-static { animation: none; }
+  .offer-celebration-animated { animation: none; }
+  .offer-celebration-heart { @apply h-5 w-5 fill-[#d88b78] text-[#9a4d39]; }
+  .offer-celebration-spark { @apply absolute font-display text-lg text-[#b17a38]; }
+  .offer-celebration-spark-one { left: 1rem; top: -1rem; }
+  .offer-celebration-spark-two { right: 1.2rem; top: -0.8rem; }
+  .offer-celebration-spark-three { right: -0.7rem; bottom: 0.7rem; }
 }
+
 
 @media (prefers-reduced-motion: no-preference) {
   .live-dot { animation: live-pulse 1.8s ease-in-out infinite; }
+  .offer-celebration-animated { animation: celebration-in 220ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+  .offer-celebration-animated .offer-celebration-heart { animation: heart-pop 650ms cubic-bezier(0.23, 1, 0.32, 1) both; }
+  .offer-celebration-animated .offer-celebration-spark-one { animation: spark-one 650ms ease-out both; }
+  .offer-celebration-animated .offer-celebration-spark-two { animation: spark-two 650ms ease-out both; }
+  .offer-celebration-animated .offer-celebration-spark-three { animation: spark-three 650ms ease-out both; }
+  @keyframes celebration-in { from { opacity: 0; transform: translateY(-8px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes heart-pop { 0% { transform: scale(.88); } 38% { transform: scale(1.22); } 100% { transform: scale(1); } }
+  @keyframes spark-one { from { opacity: 0; transform: translate(0, 8px) rotate(-14deg); } to { opacity: 1; transform: translate(-3px, 0) rotate(0); } }
+  @keyframes spark-two { from { opacity: 0; transform: translate(0, 8px) rotate(14deg); } to { opacity: 1; transform: translate(3px, 0) rotate(0); } }
+  @keyframes spark-three { from { opacity: 0; transform: translate(-4px, -4px); } to { opacity: .8; transform: translate(0, 0); } }
   @keyframes live-pulse { 0%, 100% { box-shadow: 0 0 0 3px rgba(104,130,83,.12); } 50% { box-shadow: 0 0 0 6px rgba(104,130,83,.05); } }
 }
 @media (max-width: 640px) {

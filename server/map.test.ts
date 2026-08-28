@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { demoPosts, filterPosts } from "../client/src/data/demo";
-import { approximateAreaPoint, isMapActivationKey, isUsableApproximateArea, mapMarkerAccessibility } from "../shared/map";
+import { approximateAreaPoint, getFriendlyMapPrompts, isMapActivationKey, isUsableApproximateArea, mapMarkerAccessibility } from "../shared/map";
 
 describe("privacy-safe map coordinates", () => {
   it("uses stable neighborhood centers for known approximate areas", () => {
@@ -27,6 +27,13 @@ describe("privacy-safe map coordinates", () => {
     expect(filterPosts(demoPosts, { category: "all", urgency: "all", kind: "all", tag: "algebra" }).every(post => post.skills.includes("algebra"))).toBe(true);
     expect(filterPosts(demoPosts, { category: "all", urgency: "today", kind: "all" }).map(post => post.id)).toEqual(["demo-grocery-request", "demo-grocery-offer"]);
     expect(filterPosts(demoPosts, { category: "all", urgency: "all", kind: "all", tagQuery: "wheelchair" }).map(post => post.id)).toEqual(["demo-ride-request", "demo-ride-offer"]);
+  });
+
+  it("personalizes friendly prompts by time and nearby category", () => {
+    expect(getFriendlyMapPrompts(["groceries"], 9)[0]).toContain("Good morning");
+    expect(getFriendlyMapPrompts(["rides"], 19)[0]).toContain("evening");
+    expect(getFriendlyMapPrompts(["rides"], 14)[1]).toContain("ride");
+    expect(getFriendlyMapPrompts([], 14)[1]).toContain("something useful");
   });
 
   it("creates a bounded deterministic point for an unknown approximate area", () => {
