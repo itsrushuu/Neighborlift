@@ -27,6 +27,22 @@ export function isMapActivationKey(key: string) {
   return key === "Enter" || key === " " || key === "Spacebar";
 }
 
+/** Resets Demo Mode playback state without creating or persisting a community post. */
+export const demoPlaybackCancelledState = { demoPlaying: false, demoCelebrationVisible: false } as const;
+
+export function clearDemoPlaybackTimers<T>(timers: T[], clearTimer: (timer: T) => void) {
+  timers.forEach(clearTimer);
+  return [] as T[];
+}
+
+/** Defines the non-persisting Demo Mode story beats used by the map auto-play. */
+export const demoPlaybackPlan = [
+  { type: "select-request", postId: "demo-grocery-request", atMs: 650 },
+  { type: "celebrate-offer", atMs: 1500 },
+  { type: "finish", atMs: 2800 },
+  { type: "hide-celebration", atMs: 3600 },
+] as const;
+
 /** Selects the map’s explicit data source: labeled samples for demos or persisted activity for live use. */
 export function selectMapPosts<T>(livePosts: T[] | undefined, demoPosts: T[], demoMode: boolean) {
   return demoMode ? demoPosts : livePosts || [];

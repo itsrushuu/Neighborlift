@@ -6,7 +6,8 @@ import { categoryMeta, demoPosts, DemoPost, filterPosts, safeParseSkills, urgenc
 import { liveQueryOptions } from "@/lib/liveData";
 import { trpc } from "@/lib/trpc";
 import { MapView } from "@/components/Map";
-import { approximateAreaPoint, getFriendlyMapPrompts, isMapActivationKey, isUsableApproximateArea, MAP_CENTER, mapMarkerAccessibility, selectMapPosts } from "@shared/map";
+import { celebrationAccessibility, celebrationCopy, celebrationMotionClass } from "@shared/celebration";
+import { approximateAreaPoint, clearDemoPlaybackTimers, demoPlaybackCancelledState, demoPlaybackPlan, getFriendlyMapPrompts, isMapActivationKey, isUsableApproximateArea, MAP_CENTER, mapMarkerAccessibility, selectMapPosts } from "@shared/map";
 
 type MapPost = DemoPost & { lat: number; lng: number };
 type CategoryFilter = "all" | DemoPost["category"];
@@ -42,6 +43,10 @@ export default function CommunityMap() {
   const [tagQuery, setTagQuery] = useState("");
   const [urgency, setUrgency] = useState<"all" | DemoPost["urgency"]>("all");
   const [demoMode, setDemoMode] = useState(() => new URLSearchParams(window.location.search).get("demo") === "1");
+  const [demoPlaying, setDemoPlaying] = useState(false);
+  const [demoCelebrationVisible, setDemoCelebrationVisible] = useState(false);
+  const [demoPlaybackNonce, setDemoPlaybackNonce] = useState(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
   const [mapReady, setMapReady] = useState(false);
   const [mapTimedOut, setMapTimedOut] = useState(false);
@@ -49,6 +54,7 @@ export default function CommunityMap() {
   const [currentHour] = useState(() => new Date().getHours());
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
+  const demoTimersRef = useRef<number[]>([]);
   const hasLivePosts = Boolean(livePosts?.length);
 
   const liveMapPosts = useMemo<DemoPost[]>(() => livePosts?.length ? livePosts.map(post => ({ ...post, id: String(post.id), skills: safeParseSkills(post.skills), accessibilityNotes: post.accessibilityNotes || undefined, createdLabel: "Just posted", matchCount: 0 })) : [], [livePosts]);
@@ -61,11 +67,44 @@ export default function CommunityMap() {
   const selectedPost = points.find(post => post.id === selectedId) || points[0];
   const insights = useMemo(() => ({ active: posts.filter(post => post.urgency !== "flexible").length, requests: posts.filter(post => post.kind === "request").length, offers: posts.filter(post => post.kind === "offer").length, today: posts.filter(post => post.urgency === "today").length }), [posts]);
   const contextualPrompts = useMemo(() => getFriendlyMapPrompts(Array.from(new Set(filtered.map(post => post.category))), currentHour), [filtered, currentHour]);
+  const cancelDemoPlayback = () => {
+    demoTimersRef.current = clearDemoPlaybackTimers(demoTimersRef.current, timer => window.clearTimeout(timer));
+    setDemoPlaying(demoPlaybackCancelledState.demoPlaying);
+    setDemoCelebrationVisible(demoPlaybackCancelledState.demoCelebrationVisible);
+  };
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setMapTimedOut(true), 4500);
     return () => window.clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotionPreference = () => setPrefersReducedMotion(media.matches);
+    syncMotionPreference();
+    media.addEventListener("change", syncMotionPreference);
+    return () => media.removeEventListener("change", syncMotionPreference);
+  }, []);
+
+  useEffect(() => {
+    demoTimersRef.current = clearDemoPlaybackTimers(demoTimersRef.current, timer => window.clearTimeout(timer));
+    setDemoCelebrationVisible(false);
+    if (!demoMode) {
+      setDemoPlaying(false);
+      return;
+    }
+    setDemoPlaying(true);
+    demoTimersRef.current = demoPlaybackPlan.map(step => window.setTimeout(() => {
+      if (step.type === "select-request") setSelectedId(step.postId);
+      if (step.type === "celebrate-offer") setDemoCelebrationVisible(true);
+      if (step.type === "finish") setDemoPlaying(false);
+      if (step.type === "hide-celebration") setDemoCelebrationVisible(false);
+    }, step.atMs));
+    return () => {
+      demoTimersRef.current.forEach(timer => window.clearTimeout(timer));
+      demoTimersRef.current = [];
+    };
+  }, [demoMode, demoPlaybackNonce]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -89,7 +128,7 @@ export default function CommunityMap() {
     return () => { markersRef.current.forEach(marker => { marker.map = null; }); };
   }, [mapReady, points, selectedId]);
 
-  return <div className="min-h-screen bg-[#fbfaf6] text-stone-900"><SiteHeader /><main className="container px-5 py-9 sm:px-7 sm:py-14"><div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end"><div><p className="section-kicker">Live community map</p><h1 className="mt-3 max-w-3xl font-display text-4xl font-extrabold leading-[0.98] tracking-[-0.055em] text-stone-950 sm:text-5xl">See where neighbors are showing up.</h1><p className="mt-5 max-w-2xl text-base leading-7 text-stone-600">Find a little help close to home. We show approximate areas so neighbors can connect without sharing an exact address.</p><p role="status" aria-live="polite" className="mt-4 max-w-xl text-sm font-semibold text-[#536645]">{contextualPrompts[promptIndex % contextualPrompts.length]}</p></div><div className="flex flex-col items-start gap-3 lg:items-end"><div className="map-live-note"><span className="live-dot" />{isFetching ? "Checking for new neighbor posts…" : demoMode ? "Demo Mode · sample neighbors" : hasLivePosts ? "Live community activity" : "No live posts yet"}</div><button type="button" onClick={() => setDemoMode(current => !current)} aria-pressed={demoMode} className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#536645] focus-visible:ring-offset-2 ${demoMode ? "border-[#536645] bg-[#536645] text-white" : "border-stone-200 bg-white text-stone-700 hover:border-[#91a17f] hover:text-[#536645]"}`}><Sparkles className="h-3.5 w-3.5" />{demoMode ? "Turn off Demo Mode" : "Try Demo Mode"}</button></div></div>
+  return <div className="min-h-screen bg-[#fbfaf6] text-stone-900"><SiteHeader />{demoCelebrationVisible && <div className={`offer-celebration ${celebrationMotionClass(prefersReducedMotion)}`} role={celebrationAccessibility.role} aria-live={celebrationAccessibility.ariaLive}><HeartHandshake className="offer-celebration-heart" /><span className="offer-celebration-spark offer-celebration-spark-one">✦</span><span className="offer-celebration-spark offer-celebration-spark-two">✦</span><span className="offer-celebration-spark offer-celebration-spark-three">·</span><p>{celebrationCopy.offerPublished} <small>Demo only — no post was saved.</small></p></div>}<main className="container px-5 py-9 sm:px-7 sm:py-14"><div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end"><div><p className="section-kicker">Live community map</p><h1 className="mt-3 max-w-3xl font-display text-4xl font-extrabold leading-[0.98] tracking-[-0.055em] text-stone-950 sm:text-5xl">See where neighbors are showing up.</h1><p className="mt-5 max-w-2xl text-base leading-7 text-stone-600">Find a little help close to home. We show approximate areas so neighbors can connect without sharing an exact address.</p><p role="status" aria-live="polite" className="mt-4 max-w-xl text-sm font-semibold text-[#536645]">{contextualPrompts[promptIndex % contextualPrompts.length]}</p></div><div className="flex flex-col items-start gap-3 lg:items-end"><div className="map-live-note"><span className="live-dot" />{isFetching ? "Checking for new neighbor posts…" : demoMode ? "Demo Mode · sample neighbors" : hasLivePosts ? "Live community activity" : "No live posts yet"}</div><div className="flex flex-wrap items-center gap-2"><button type="button" onClick={() => setDemoMode(current => !current)} aria-pressed={demoMode} className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#536645] focus-visible:ring-offset-2 ${demoMode ? "border-[#536645] bg-[#536645] text-white" : "border-stone-200 bg-white text-stone-700 hover:border-[#91a17f] hover:text-[#536645]"}`}><Sparkles className="h-3.5 w-3.5" />{demoMode ? "Turn off Demo Mode" : "Try Demo Mode"}</button>{demoMode && <button type="button" onClick={() => demoPlaying ? cancelDemoPlayback() : setDemoPlaybackNonce(current => current + 1)} className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-2 text-xs font-bold text-stone-700 transition hover:border-[#91a17f] hover:text-[#536645] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#536645] focus-visible:ring-offset-2">{demoPlaying ? "Stop demo journey" : "Replay demo journey"}</button>}</div></div></div>
     <section className="mt-9 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><div className="map-insight-card bg-[#e9eee2]"><Activity className="h-5 w-5 text-[#536645]" /><p>Moving today</p><strong>{insights.active}</strong><span>neighbors with something timely to share</span></div><div className="map-insight-card bg-[#f5eee1]"><HeartHandshake className="h-5 w-5 text-[#987034]" /><p>Neighbors asking</p><strong>{insights.requests}</strong><span>people nearby who could use a hand</span></div><div className="map-insight-card bg-[#ece9f3]"><UsersRound className="h-5 w-5 text-[#685989]" /><p>Neighbors offering</p><strong>{insights.offers}</strong><span>ways someone is ready to pitch in</span></div><div className="map-insight-card bg-[#f5e8e3]"><Clock3 className="h-5 w-5 text-[#9a4d39]" /><p>Needed today</p><strong>{insights.today}</strong><span>time-sensitive posts to review first</span></div></section>
     <section className="mt-8 rounded-[1.8rem] border border-stone-200 bg-white p-4 shadow-[0_14px_36px_rgba(51,43,34,0.05)] sm:p-5"><div className="flex flex-col gap-5"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-center gap-2 text-sm font-bold text-stone-800"><Filter className="h-4 w-4 text-[#536645]" />Find a neighbor nearby <span className="rounded-full bg-[#edf1e8] px-2 py-1 text-[0.68rem] font-bold text-[#536645]">{filtered.length} shown</span>{demoMode && <span className="rounded-full bg-[#f5eee1] px-2 py-1 text-[0.68rem] font-bold text-[#987034]">Sample posts</span>}</div>{hasActiveFilters && <button type="button" onClick={() => { setKind("all"); setCategory("all"); setUrgency("all"); setTag(""); setTagQuery(""); }} className="self-start text-xs font-bold text-stone-500 underline decoration-2 underline-offset-4 transition hover:text-stone-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#536645] focus-visible:ring-offset-2 sm:self-auto">Clear filters</button>}</div><div><p className="mb-2 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-stone-500">Who is showing up?</p><div className="flex flex-wrap gap-2">{(["all", "request", "offer"] as const).map(option => <button type="button" key={option} onClick={() => setKind(option)} aria-pressed={kind === option} className={`filter-chip ${kind === option ? "filter-chip-active" : ""}`}>{option === "all" ? "Everyone" : option === "request" ? "Needs help" : "Ready to help"}</button>)}</div></div><div><p className="mb-2 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-stone-500">What kind of help?</p><div className="flex flex-wrap gap-2">{(["all", ...Object.keys(categoryMeta)] as const).map(option => <button type="button" key={option} onClick={() => setCategory(option as CategoryFilter)} aria-pressed={category === option} className={`filter-chip ${category === option ? "filter-chip-active" : ""}`}>{option === "all" ? "All topics" : categoryMeta[option as DemoPost["category"]].label}</button>)}</div></div><div><p className="mb-2 text-[0.66rem] font-bold uppercase tracking-[0.14em] text-stone-500">When is help needed?</p><div className="flex flex-wrap gap-2">{(["all", "today", "this_week", "flexible"] as const).map(option => <button type="button" key={option} onClick={() => setUrgency(option)} aria-pressed={urgency === option} className={`filter-chip ${urgency === option ? "filter-chip-active" : ""}`}>{option === "all" ? "Any timing" : urgencyMeta[option].label}</button>)}</div></div><div><div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><p className="text-[0.66rem] font-bold uppercase tracking-[0.14em] text-stone-500">What can you help with?</p><label className="flex items-center gap-2 rounded-full border border-stone-200 bg-[#faf9f5] px-3 py-1.5 text-xs text-stone-500 sm:w-56"><span aria-hidden="true">⌕</span><input value={tagQuery} onChange={event => setTagQuery(event.target.value)} aria-label="Search by skill, language, or ability" placeholder="Try “Spanish” or “driving”" className="min-w-0 flex-1 bg-transparent text-xs font-semibold text-stone-800 outline-none placeholder:text-stone-400" /></label></div>{tagOptions.length > 0 && <div className="mt-2 flex flex-wrap gap-2">{tagOptions.map(option => <button type="button" key={option} onClick={() => setTag(tag === option ? "" : option)} aria-pressed={tag === option} className={`filter-chip ${tag === option ? "filter-chip-active" : ""}`}>{option}</button>)}</div>}</div></div></section>
     <section className="relative mt-6 overflow-hidden rounded-[2rem] border border-stone-200 bg-[#e9eee2] shadow-[0_18px_45px_rgba(51,43,34,0.08)]"><div className="map-frame"><MapView initialCenter={MAP_CENTER} initialZoom={13} onMapReady={map => { mapRef.current = map; setMapReady(true); }} className="h-[24rem] sm:h-[36rem]" />{!mapReady && !mapTimedOut && <div className="map-overlay"><Loader2 className="h-5 w-5 animate-spin text-[#536645]" /><span>Warming up the neighborhood map…</span></div>}{mapTimedOut && !mapReady && <div className="map-overlay"><MapPin className="h-5 w-5 text-[#536645]" /><span>The map is taking a breather. The neighbor list below is ready now.</span></div>}<div className="map-legend"><span><i className="map-legend-dot map-legend-request" />Needs help</span><span><i className="map-legend-dot map-legend-offer" />Ready to help</span><span><MapPin className="h-3.5 w-3.5" />Approximate area</span></div></div></section>

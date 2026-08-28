@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { demoPosts, filterPosts } from "../client/src/data/demo";
-import { approximateAreaPoint, getFriendlyMapPrompts, isMapActivationKey, isUsableApproximateArea, mapMarkerAccessibility, selectMapPosts } from "../shared/map";
+import { approximateAreaPoint, clearDemoPlaybackTimers, demoPlaybackCancelledState, demoPlaybackPlan, getFriendlyMapPrompts, isMapActivationKey, isUsableApproximateArea, mapMarkerAccessibility, selectMapPosts } from "../shared/map";
 
 describe("privacy-safe map coordinates", () => {
   it("uses stable neighborhood centers for known approximate areas", () => {
@@ -19,6 +19,22 @@ describe("privacy-safe map coordinates", () => {
     expect(mapMarkerAccessibility("request", "Grocery pickup")).toEqual({ ariaLabel: "Help request: Grocery pickup", tabIndex: "0", role: "button" });
     expect(["Enter", " ", "Spacebar"].every(isMapActivationKey)).toBe(true);
     expect(isMapActivationKey("Escape")).toBe(false);
+  });
+
+  it("cancels playback by clearing every pending timer and resetting celebration state", () => {
+    const pending = [11, 22, 33];
+    const cleared: number[] = [];
+    const remaining = clearDemoPlaybackTimers(pending, timer => cleared.push(timer));
+    expect(cleared).toEqual(pending);
+    expect(remaining).toEqual([]);
+    expect(demoPlaybackCancelledState).toEqual({ demoPlaying: false, demoCelebrationVisible: false });
+  });
+
+  it("defines a non-persisting playback that selects a request before celebrating an offer", () => {
+    expect(demoPlaybackPlan.map(step => step.type)).toEqual(["select-request", "celebrate-offer", "finish", "hide-celebration"]);
+    expect(demoPlaybackPlan[0]).toEqual({ type: "select-request", postId: "demo-grocery-request", atMs: 650 });
+    expect(demoPlaybackPlan[1].atMs).toBeGreaterThan(demoPlaybackPlan[0].atMs);
+    expect(demoPlaybackPlan[3].atMs).toBeGreaterThan(demoPlaybackPlan[2].atMs);
   });
 
   it("selects sample posts only when Demo Mode is enabled", () => {

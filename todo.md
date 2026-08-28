@@ -117,3 +117,14 @@
 - [x] Explicitly review DEVPOST_PROJECT_DESCRIPTION.md against the latest README and product behavior before final delivery.
 
 - [x] Capture and explicitly inspect the narrow-mobile Demo Mode screenshot for toggle, sample label, filters, map area, pins, and selected details.
+
+- [x] Add a Demo Mode auto-play journey that selects a sample request, simulates an offer, and triggers a clearly labeled thank-you/confetti moment without persistence.
+- [x] Add replay, cancellation, reduced-motion, and accessibility behavior for the demo playback.
+- [x] Add deterministic tests and responsive visual verification for the Demo Mode playback sequence.
+
+- [x] Add a deterministic Demo Mode playback plan contract so the simulated request selection and thank-you timing are covered without persisting a post.
+
+- [x] Refine the Demo Mode celebration banner positioning so it does not overlap the mobile hero heading.
+
+- [x] Add a visible Cancel demo button while Demo Mode playback is running, with copy that explains it stops the simulated journey.
+- [x] Add deterministic cancellation behavior coverage proving pending playback beats are cleared and celebration is hidden without persistence.
