@@ -103,5 +103,5 @@
 - [x] Add an honest tester-feedback template with replaceable fields, consent guidance, and no fabricated quotes.
 - [x] Verify README links and formatting, then synchronize the documentation update to GitHub.
 
-- [ ] Commit the updated README with the demo GIF placeholder and tester-feedback template, push it to GitHub main, and verify the remote README contains both sections.
-- [ ] Save a new checkpoint after the GitHub synchronization so the repository and project state align.
+- [x] Commit the updated README with the demo GIF placeholder and tester-feedback template, push it to GitHub main, and verify the remote README contains both sections.
+- [x] Save a new checkpoint after the GitHub synchronization so the repository and project state align.
