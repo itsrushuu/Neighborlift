@@ -23,12 +23,12 @@ People regularly need practical support, while other people nearby are willing t
 The clearest way to experience the prototype is to follow one complete story.
 
 1. Open the [community board](https://3000-ih2fssvx185rdibod2ph0-fe67d51d.us3.manus.computer/board) and browse requests and offers.
-2. Open the [live map](https://3000-ih2fssvx185rdibod2ph0-fe67d51d.us3.manus.computer/map), filter by help type, category, urgency, or skill, and select a post.
+2. Open the [live map](https://3000-ih2fssvx185rdibod2ph0-fe67d51d.us3.manus.computer/map?demo=1), or press **Try Demo Mode** on the map to load clearly labeled, non-personal sample posts for a populated walkthrough. Filter by help type, category, urgency, or skill, and select a post.
 3. Open a post detail page to review the AI-assisted compatibility explanation and coordination status.
 4. Sign in to publish a request or offer at [`/new/request`](https://3000-ih2fssvx185rdibod2ph0-fe67d51d.us3.manus.computer/new/request) or [`/new/offer`](https://3000-ih2fssvx185rdibod2ph0-fe67d51d.us3.manus.computer/new/offer).
 5. Visit [`/profile`](https://3000-ih2fssvx185rdibod2ph0-fe67d51d.us3.manus.computer/profile) to see personal activity history and saved display preferences.
 
-The visible sample posts are clearly marked as demo content. Authentic community-post creation remains available through the normal authenticated flow.
+The visible sample posts are clearly marked as demo content. Demo Mode can be opened directly with `?demo=1`, or enabled with the map toggle. Turning it off returns to persisted live activity; authentic community-post creation remains available through the normal authenticated flow.
 
 ## What is built
 
@@ -40,6 +40,7 @@ The visible sample posts are clearly marked as demo content. Authentic community
 | Authenticated posting | Lets people create requests and offers with skills, availability, approximate area, and optional accessibility notes. |
 | Personal activity | Shows a user’s request, offer, matched, and completed history with sorting and filtering. |
 | Human-centered feedback | Saves preferred display name and availability, provides a small accessible thank-you celebration, and adapts map prompts to time and nearby categories. |
+| Demo Mode | Opt-in sample posts make the map easy to record and evaluate without pretending that sample activity is real community usage. |
 
 ## AI approach
 

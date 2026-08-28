@@ -1,0 +1,3 @@
+# Demo Mode mobile QA
+
+Verified at a 390×844 viewport on `/map?demo=1`. The Demo Mode status pill and toggle remain visible near the top of the page and remain readable as separate controls. The sample-post badge and result count sit within the filter card without clipping. Type, category, urgency, and skill/tag controls wrap into compact rows and remain visually distinct. The map region, legend, nearby-post list, and selected-detail card stack vertically; the list and selected detail remain reachable below the map fallback. Sample posts render with category cues, urgency labels, approximate areas, and a full-post action. No horizontal overflow or clipped text was observed in the captured full-page view.

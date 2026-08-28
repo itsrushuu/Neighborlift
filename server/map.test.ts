@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { demoPosts, filterPosts } from "../client/src/data/demo";
-import { approximateAreaPoint, getFriendlyMapPrompts, isMapActivationKey, isUsableApproximateArea, mapMarkerAccessibility } from "../shared/map";
+import { approximateAreaPoint, getFriendlyMapPrompts, isMapActivationKey, isUsableApproximateArea, mapMarkerAccessibility, selectMapPosts } from "../shared/map";
 
 describe("privacy-safe map coordinates", () => {
   it("uses stable neighborhood centers for known approximate areas", () => {
@@ -19,6 +19,14 @@ describe("privacy-safe map coordinates", () => {
     expect(mapMarkerAccessibility("request", "Grocery pickup")).toEqual({ ariaLabel: "Help request: Grocery pickup", tabIndex: "0", role: "button" });
     expect(["Enter", " ", "Spacebar"].every(isMapActivationKey)).toBe(true);
     expect(isMapActivationKey("Escape")).toBe(false);
+  });
+
+  it("selects sample posts only when Demo Mode is enabled", () => {
+    const livePosts = [{ id: "live-1" }];
+    const samplePosts = [{ id: "sample-1" }];
+    expect(selectMapPosts(livePosts, samplePosts, true)).toEqual(samplePosts);
+    expect(selectMapPosts(livePosts, samplePosts, false)).toEqual(livePosts);
+    expect(selectMapPosts(undefined, samplePosts, false)).toEqual([]);
   });
 
   it("filters posts by category and skill tag together", () => {

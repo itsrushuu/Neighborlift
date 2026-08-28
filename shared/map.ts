@@ -27,6 +27,11 @@ export function isMapActivationKey(key: string) {
   return key === "Enter" || key === " " || key === "Spacebar";
 }
 
+/** Selects the map’s explicit data source: labeled samples for demos or persisted activity for live use. */
+export function selectMapPosts<T>(livePosts: T[] | undefined, demoPosts: T[], demoMode: boolean) {
+  return demoMode ? demoPosts : livePosts || [];
+}
+
 /** Builds friendly, context-aware map prompts without exposing private post details. */
 export function getFriendlyMapPrompts(categories: string[], hour: number) {
   const timePrompt = hour < 12

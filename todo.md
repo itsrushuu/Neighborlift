@@ -105,3 +105,15 @@
 
 - [x] Commit the updated README with the demo GIF placeholder and tester-feedback template, push it to GitHub main, and verify the remote README contains both sections.
 - [x] Save a new checkpoint after the GitHub synchronization so the repository and project state align.
+
+- [x] Add an opt-in, clearly labeled Demo Mode toggle to the live map.
+- [x] Populate Demo Mode with realistic non-personal sample posts that visibly exercise map categories, urgency, tags, filters, and details.
+- [x] Update DEVPOST_PROJECT_DESCRIPTION.md using the current README capabilities, privacy model, AI approach, and demo flow.
+- [x] Verify Demo Mode, Devpost accuracy, tests, TypeScript, production build, and responsive recording layout.
+
+- [x] Add deterministic coverage for Demo Mode selecting sample posts, live mode selecting persisted posts, and empty live mode staying honest.
+
+- [x] Verify Demo Mode on a narrow mobile viewport, including toggle, sample label, filters, pins, and selected details.
+- [x] Explicitly review DEVPOST_PROJECT_DESCRIPTION.md against the latest README and product behavior before final delivery.
+
+- [x] Capture and explicitly inspect the narrow-mobile Demo Mode screenshot for toggle, sample label, filters, map area, pins, and selected details.
