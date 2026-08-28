@@ -109,6 +109,54 @@ pnpm build
 
 The current verified state includes **29 passing Vitest tests**, clean TypeScript validation, and a successful production build.
 
+## Deploy (Railway + MySQL/TiDB)
+
+This project runs as a long-lived Node.js service, so deploy it to a host such as Railway, Render, Fly.io, or a VPS. The configuration in this repository is prepared for Railway.
+
+### 1) Create infrastructure
+
+1. Create a Railway project for this repository.
+2. Add a **MySQL** service (or use an external TiDB cluster).
+3. Connect the Node app service to that database.
+
+### 2) Set required environment variables
+
+Copy values from your infrastructure and identity provider settings, then configure:
+
+- `DATABASE_URL`
+- `JWT_SECRET`
+- `VITE_APP_ID`
+- `OAUTH_SERVER_URL`
+- `OWNER_OPEN_ID`
+- `BUILT_IN_FORGE_API_URL`
+- `BUILT_IN_FORGE_API_KEY`
+- `NODE_ENV=production`
+
+A starter template is included at `/home/runner/work/Neighborlift/Neighborlift/.env.example`.
+
+### 3) Build and start commands
+
+Use these commands in your host configuration:
+
+- Build: `pnpm install --frozen-lockfile && pnpm build`
+- Start: `pnpm start`
+
+### 4) Run database migrations before first production start
+
+Run:
+
+```bash
+pnpm db:push
+```
+
+### 5) Verify deployment
+
+After deploy, open and validate:
+
+- `/board`
+- `/map`
+- Authenticated flow: `/new/request` or `/new/offer`
+
 ## Repository guide
 
 ```text
