@@ -6,6 +6,14 @@ NeighborLift is a social-good web app for everyday community support. People can
 
 **HackSocial 2026 project** · [Live prototype](https://3000-ih2fssvx185rdibod2ph0-fe67d51d.us3.manus.computer) · [GitHub repository](https://github.com/itsrushuu/Neighborlift) · [Devpost project description](./DEVPOST_PROJECT_DESCRIPTION.md)
 
+> **Demo GIF placeholder**
+>
+> Replace this block with a short recording before submission:
+>
+> `![NeighborLift demo](./docs/demo.gif)`
+>
+> The recommended recording should show one complete journey: browse a help post, filter the live map, inspect an explainable match, and publish an offer. Keep it brief, crop out private information, and use authentic activity whenever possible.
+
 ## Why it matters
 
 People regularly need practical support, while other people nearby are willing to help but do not know where their time or skills would be useful. Existing community tools can feel transactional, difficult to search, or careless with personal information. NeighborLift creates a more human first step: describe the need or offer, discover nearby activity at an approximate neighborhood level, and review an explainable suggested connection before choosing whether to coordinate.
@@ -111,6 +119,27 @@ drizzle/schema.ts      Database tables and typed inserts/shared models
 shared/                 Privacy, matching, map, and celebration contracts
 docs/                   Architecture, privacy, and demo notes
 ```
+
+## Tester feedback
+
+This section is intentionally a template until real people have tried NeighborLift. Do not publish invented quotes, ratings, or testimonials. After a tester gives permission, replace the fields below with their exact words and a short description of what they tried.
+
+### Feedback entry template
+
+| Field | Replace with |
+|---|---|
+| Tester context | `[e.g., student volunteer, community organizer, neighbor]` |
+| What they tried | `[route or task they completed]` |
+| Exact feedback | `[Paste a genuine quote verbatim after receiving permission]` |
+| What changed | `[Describe the product improvement you made, if any]` |
+
+### How to record and upload the demo GIF
+
+1. Open the live prototype and close any personal tabs, notifications, or account details that should not appear in the recording.
+2. Record a 30–90 second walkthrough using Windows Snipping Tool, Xbox Game Bar, macOS Screenshot, or another screen recorder. Move the cursor slowly and pause briefly when showing the map filter, match explanation, and offer confirmation.
+3. Convert the recording to GIF and keep it lightweight. A width around 960px and a file size under 5MB is a practical target for a README and hackathon submission. If your recorder exports MP4, use a trusted local converter rather than uploading private footage to an unknown website.
+4. Save the final file as `docs/demo.gif` in this repository. You can upload it on GitHub by opening the repository, selecting **Add file → Upload files**, dragging in `docs/demo.gif`, and committing to `main`; or use Git locally with `git add docs/demo.gif`, `git commit -m "docs: add demo walkthrough gif"`, and `git push origin main`.
+5. Confirm that the image renders from the README on GitHub and that the GIF does not reveal exact addresses, private messages, credentials, or other personal information.
 
 ## What we learned
 

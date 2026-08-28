@@ -98,3 +98,10 @@
 - [x] Replace root-relative README app links with judge-friendly live prototype URLs or clearly labeled route text.
 - [x] Re-verify all README and supporting-document links plus repository hygiene, tests, TypeScript, and production build.
 - [x] Commit and push the README/docs package to GitHub main and verify the remote contains the new files.
+
+- [x] Add a clearly labeled demo GIF placeholder with recording and upload instructions to README.md.
+- [x] Add an honest tester-feedback template with replaceable fields, consent guidance, and no fabricated quotes.
+- [x] Verify README links and formatting, then synchronize the documentation update to GitHub.
+
+- [ ] Commit the updated README with the demo GIF placeholder and tester-feedback template, push it to GitHub main, and verify the remote README contains both sections.
+- [ ] Save a new checkpoint after the GitHub synchronization so the repository and project state align.
